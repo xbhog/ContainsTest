@@ -1,0 +1,133 @@
+ @Resource
+    private SnowFlake snowFlake;
+
+    /*@Test
+    void contextLoads() {
+        List<String> list = new ArrayList<>();
+        list.add("/image/sadas/loan");
+        list.add("/image/sadas/credit");
+        list.add("/image/sadas/pbc");
+        list.add("/image/sadas/asdasd");
+
+        List<String> loan = list.stream().filter(x -> !x.contains("loan")).collect(Collectors.toList());
+        for(String a : loan){
+            System.out.println(a);
+        }
+    }
+
+    @Test
+    public void hashCodeTest(){
+        List<String> list = new ArrayList<>();
+        Map<Integer, String> map = new HashMap<>();
+        for(int i = 0; i < 101; i++){
+            list.add(String.valueOf(snowFlake.nextId()));
+        }
+        //定义要存放的数组 模拟初始化为128
+        String[] res = new String[128];
+
+        for(String key : list){
+            //计算hash值
+            //int idx = key.hashCode() & (res.length - 1);
+            //添加扰动函数
+            int idx =  (res.length - 1) & (key.hashCode() ^ (key.hashCode() >>> 16));
+            log.info("key的值{}，idx的值{}",key,idx);
+            if(null == res[idx]){
+                res[idx] = key;
+                continue;
+            }
+            res[idx] = res[idx] +"->" + key;
+            map.put(idx,res[idx]);
+        }
+        //排序
+        mapSort(map);
+        //log.info("HashMap散列效果：{}",JSON.toJSONString(res));
+        //log.info("HashMap散列重复数据：{}",JSON.toJSONString(map));
+    }
+
+
+
+    private static final int HASH_INCREMENT = 0x61c88647;
+    private static int range = 100;
+    @Test
+    public void ThreadLocalTest(){
+        List<Integer> listThreadLocal = new ArrayList<>();
+
+        Map<Integer, String> map = new HashMap<>();
+        //定义要存放的数组 模拟初始化为128
+        Integer[] result = new Integer[128];
+        //初始化100个数 有问题：随机生成有重复值，不利于实验结果
+        *//*for(int i = 0; i < 16; i++){
+            listThreadLocal.add(generateSecureRandomIntCode(16));
+        }*//*
+        result = getNumber(range);
+        int hashCode = 0;
+        for(int i = 0; i < listThreadLocal.size(); i++){
+            hashCode = listThreadLocal.get(i) * HASH_INCREMENT + HASH_INCREMENT;
+            Integer idx = (hashCode & 127);
+            log.info("key的值{}，idx的值{}",listThreadLocal.get(i),idx);
+            if(null == result[idx]){
+                result[idx] = listThreadLocal.get(i);
+                continue;
+            }
+            String idxInRes = map.get(idx);
+            String idxInRess = idxInRes + "->" + listThreadLocal.get(i);
+            map.put(idx,idxInRess);
+        }
+        //map排序
+        if(CollectionUtil.isEmpty(map)){
+            log.info("斐波那契额散列数据集：{}",JSON.toJSONString(result));
+            System.out.println("===》无重复数据,不需要排序");
+            return;
+        }
+        mapSort(map);
+    }
+
+    *//**
+     * 随机生成100以内的数
+     * @param bound
+     * @return
+     *//*
+    protected int generateSecureRandomIntCode(int bound) {
+        return new SecureRandom().nextInt(bound)+1;
+    }
+
+    *//**
+     * 随机生成100以内不重复的数
+     * @param total
+     * @return
+     *//*
+    public static Integer[] getNumber(int total){
+        Integer[] NumberBox = new Integer[total];			//容器A
+        Integer[] rtnNumber = new Integer[total];			//容器B
+
+        for (int i = 0; i < total; i++){
+            NumberBox[i] = i;		//先把N个数放入容器A中
+        }
+        Integer end = total - 1;
+
+        for (int j = 0; j < total; j++){
+            int num = new Random().nextInt(end + 1);	//取随机数
+            rtnNumber[j] = NumberBox[num];			//把随机数放入容器B
+            NumberBox[num] = NumberBox[end];			//把容器A中最后一个数覆盖所取的随机数
+            end--;									//缩小随机数所取范围
+        }
+        return rtnNumber;							//返回int型数组
+    }
+    *//**
+     * map进行排序
+     * @param map
+     *//*
+    private void mapSort(Map<Integer, String> map) {
+        // 按照Map的键进行排序
+        Map<Integer, String> sortedMap = map.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(
+                        Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (oldVal, newVal) -> oldVal,
+                                LinkedHashMap::new
+                        )
+                );
+        log.info("====>斐波那契额散列算法重复数据：{}",JSON.toJSONString(sortedMap));
+    }*/
