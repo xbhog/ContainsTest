@@ -14,9 +14,13 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.annotation.Resource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 @Slf4j
@@ -28,6 +32,9 @@ public class ContainsTestApplicationTests {
     @Resource
     private TransactionTemplate transactionTemplate;
 
+    /**
+     * mybatis-plus demo
+     */
     @Test
     public void TestInsert() {
         Sample sample = new Sample();
@@ -58,5 +65,39 @@ public class ContainsTestApplicationTests {
         });
         throw new RuntimeException("运行异常");
 
+    }
+
+    /**
+     * sql包下的时间日期：年-月-日
+     * Java.util包下的时间日期：年-月-日 时:分:秒
+     */
+    @Test
+    public void demo2(){
+        System.out.println(new Date(System.currentTimeMillis()));
+        System.out.println(new Date());
+    }
+    /**
+     * CompletableFuture处理
+     * 带返回值异步请求，默认线程池
+     * public static <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier)
+     * 带返回值的异步请求，可以自定义线程池
+     * public static <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier, Executor executor)
+     */
+    @Test
+    public void demo3() throws ExecutionException, InterruptedException {
+        //默认线程池
+        CompletableFuture<Object> thing = CompletableFuture.supplyAsync(() -> {
+            System.out.println("do someThing");
+            return null;
+        });
+        System.out.println("等待子任务结束："+thing.get());
+        System.out.println("===================");
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        CompletableFuture.supplyAsync(()->{
+            System.out.println("do someThing executors");
+            return null;
+        },executorService);
+        System.out.println("(自定义线程池)等待子任务结束："+thing.get());
+        Thread.sleep(1000);
     }
 }
