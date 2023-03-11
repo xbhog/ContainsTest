@@ -17,10 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 
 @Slf4j
@@ -84,7 +81,7 @@ public class ContainsTestApplicationTests {
      * public static <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier, Executor executor)
      */
     @Test
-    public void demo3() throws ExecutionException, InterruptedException {
+    public void demo3() throws Exception {
         //默认线程池
         CompletableFuture<Object> thing = CompletableFuture.supplyAsync(() -> {
             System.out.println("do someThing");
@@ -93,11 +90,17 @@ public class ContainsTestApplicationTests {
         System.out.println("等待子任务结束："+thing.get());
         System.out.println("===================");
         ExecutorService executorService = Executors.newFixedThreadPool(3);
-        CompletableFuture.supplyAsync(()->{
+        CompletableFuture<Object> do_someThing_executors = CompletableFuture.supplyAsync(() -> {
             System.out.println("do someThing executors");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             return null;
-        },executorService);
-        System.out.println("(自定义线程池)等待子任务结束："+thing.get());
-        Thread.sleep(1000);
+        }, executorService);
+
+        System.out.println("(自定义线程池)等待子任务结束："+do_someThing_executors.get(1, TimeUnit.SECONDS));
+
     }
 }
