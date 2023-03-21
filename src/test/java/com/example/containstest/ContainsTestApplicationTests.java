@@ -1,6 +1,10 @@
 package com.example.containstest;
 import com.example.containstest.containsTestDemo.mapper.SampleMapper;
+
 import com.example.containstest.containsTestDemo.pojo.Sample;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -15,9 +19,11 @@ import javax.annotation.Resource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.BinaryOperator;
+import java.util.stream.LongStream;
 
 
 @Slf4j
@@ -102,5 +108,42 @@ public class ContainsTestApplicationTests {
 
         System.out.println("(自定义线程池)等待子任务结束："+do_someThing_executors.get(1, TimeUnit.SECONDS));
 
+    }
+
+    /**
+     * 非线程安全在并行流中的问题
+     */
+    @Test
+    public void demo4(){
+        ArrayList<Long> list01 = new ArrayList<>();
+        ArrayList<Long> list02 = new ArrayList<>();
+
+        int times = 1000; // 定义元素的多少
+        LongStream.rangeClosed(0, times).forEach(list01::add);
+        System.out.println("串行流元素数量 = "+list01.size());
+
+        LongStream.rangeClosed(0,times).parallel().forEach(list02::add);
+        System.out.println("并行流元素数量 = "+list02.size());
+
+
+    }
+
+    /**
+     * stream流
+     */
+    @Test
+    public void demo5(){
+        List<Invoice> invoices = Arrays.asList(
+                new Invoice("A01", BigDecimal.valueOf(9.99)),
+                new Invoice("A02", BigDecimal.valueOf(19.99)),
+                new Invoice("A03", BigDecimal.valueOf(4.99))
+        );
+        //第一种用法
+        Optional<BigDecimal> reduce1 = invoices.stream().map(Invoice::getPrice).reduce(BigDecimal::add);
+        //第二种法
+        BigDecimal reduce = invoices.stream().map(Invoice::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        System.out.println(reduce);
+        System.out.println(reduce1.get());
     }
 }
