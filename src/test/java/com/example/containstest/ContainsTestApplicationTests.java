@@ -1,7 +1,9 @@
 package com.example.containstest;
 import com.example.containstest.containsTestDemo.mapper.SampleMapper;
 
+import com.example.containstest.containsTestDemo.pojo.Componse;
 import com.example.containstest.containsTestDemo.pojo.Sample;
+import com.example.containstest.containsTestDemo.service.payResultimpl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -173,6 +175,99 @@ public class ContainsTestApplicationTests {
         Optional<BigDecimal> reduce = list1.stream().filter(x -> !Objects.isNull(x.getAmount())).map(demo::getAmount).reduce(BigDecimal::add);
         System.out.println(reduce.get());
     }
+
+    /**
+     * 测试状态取值类 allOf&anyAll
+     */
+    @Test
+    public void allofAndAnyOf() throws Exception {
+        //allGetResult();
+        CompletableFuture<String> cf1 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " cf1 do something....");
+                Thread.sleep(8000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("cf1 任务完成");
+            return "cf1 任务完成";
+        });
+
+        CompletableFuture<String> cf2 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " cf2 do something....");
+                Thread.sleep(2000);
+                int i = 1/0;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("cf2 任务完成");
+            return "cf2 任务完成";
+        });
+
+        CompletableFuture<Object> cfAll = CompletableFuture.anyOf(cf1, cf2);
+        System.out.println("cfAll结果->" + cfAll.get());
+
+    }
+
+    /**
+     * allof操作
+     */
+    private static void allGetResult() throws Exception {
+        CompletableFuture<String> cf1 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " cf1 do something....");
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("cf1 任务完成");
+            return "cf1 任务完成";
+        });
+
+        CompletableFuture<String> cf2 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " cf2 do something....");
+                //int a = 1/0;
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("cf2 任务完成");
+            return "cf2 任务完成";
+        });
+
+        CompletableFuture<String> cf3 = CompletableFuture.supplyAsync(() -> {
+            try {
+                System.out.println(Thread.currentThread() + " cf3 do something....");
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("cf3 任务完成");
+            return "cf3 任务完成";
+        });
+
+        CompletableFuture.allOf(cf1, cf2, cf3).get();
+        System.out.println("=========>主进程");
+    }
+
+    /**
+     * 测试泛型转发
+     */
+    @Test
+    public void demo11(){
+        String extracted = extracted();
+    }
+
+    private static String extracted() {
+        payResultimpl payResultimpl = new payResultimpl();
+        return payResultimpl.payReult().getData();
+    }
+
+    /**
+     * 自定义类
+     */
     class demo{
         private BigDecimal amount;
 
