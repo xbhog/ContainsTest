@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BinaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 
@@ -88,6 +89,14 @@ public class ContainsTestApplicationTests {
      */
     @Test
     public void demo3() throws Exception {
+        //supplyAsyncDemo();
+        CompletableFuture<Void> do_the_someThing = CompletableFuture.runAsync(() -> {
+            System.out.println("do the someThing");
+        });
+        System.out.println(do_the_someThing.get());
+    }
+
+    private static void supplyAsyncDemo() throws InterruptedException, ExecutionException, TimeoutException {
         //默认线程池
         CompletableFuture<Object> thing = CompletableFuture.supplyAsync(() -> {
             System.out.println("do someThing");
@@ -107,7 +116,6 @@ public class ContainsTestApplicationTests {
         }, executorService);
 
         System.out.println("(自定义线程池)等待子任务结束："+do_someThing_executors.get(1, TimeUnit.SECONDS));
-
     }
 
     /**
@@ -145,5 +153,49 @@ public class ContainsTestApplicationTests {
 
         System.out.println(reduce);
         System.out.println(reduce1.get());
+    }
+
+    @Test
+    public void contextLoads() {
+        List<String> list = new ArrayList<>();
+        list.add("/image/sadas/loan");
+        list.add("/image/sadas/credit");
+        list.add("/image/sadas/pbc");
+        list.add("/image/sadas/asdasd");
+        List<demo> list1 = new ArrayList<>();
+        list1.add(new demo());
+        list1.add(new demo(new BigDecimal(1)));
+        list1.add(new demo(new BigDecimal(3)));
+        List<String> loan = list.stream().filter(x -> x.contains("loan")).collect(Collectors.toList());
+        for(String a : loan){
+            System.out.println(a);
+        }
+        Optional<BigDecimal> reduce = list1.stream().filter(x -> !Objects.isNull(x.getAmount())).map(demo::getAmount).reduce(BigDecimal::add);
+        System.out.println(reduce.get());
+    }
+    class demo{
+        private BigDecimal amount;
+
+        public demo() {
+        }
+
+        public demo(BigDecimal amount) {
+            this.amount = amount;
+        }
+
+        public BigDecimal getAmount() {
+            return amount;
+        }
+
+        public void setAmount(BigDecimal amount) {
+            this.amount = amount;
+        }
+
+        @Override
+        public String toString() {
+            return "demo{" +
+                    "amount=" + amount +
+                    '}';
+        }
     }
 }
