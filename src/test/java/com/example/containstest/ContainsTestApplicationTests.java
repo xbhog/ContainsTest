@@ -253,16 +253,17 @@ public class ContainsTestApplicationTests {
     }
 
     /**
-     * 测试泛型转发
+     * 测试泛型转换
      */
     @Test
     public void demo11(){
         String extracted = extracted();
+        System.out.println(extracted);
     }
 
     private static String extracted() {
         payResultimpl payResultimpl = new payResultimpl();
-        return payResultimpl.payReult().getData();
+        return (String) payResultimpl.payReult().getData();
     }
 
     /**
